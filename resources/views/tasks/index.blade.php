@@ -1,6 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+     @if(session('success'))
+     <script>
+         Swal.fire({
+             title: 'Success!',
+             text: "{{ session('success') }}",
+             icon: 'success',
+             confirmButtonText: 'OK'
+         });
+     </script>
+ @endif
     <div class="container">
         <h1 class="my-4">My Tasks</h1>
 
@@ -24,9 +34,25 @@
                     <tr>
                         <td>{{ $task->title }}</td>
                         <td>{{ $task->description }}</td>
-                        <td>{{ $task->status }}</td>
+                        <td>
+                            @if ($task->status == 0)
+                                <span class="badge text-bg-primary">pending</span>
+                            @else
+                                <span class="badge text-bg-success">completed</span>
+                            @endif
+                        </td>
                         <td>{{ $task->due_date }}</td>
                         <td>
+                            <form action="{{ route('task_manage', $task->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit" class="btn {{ $task->status == 0 ? 'btn-warning' : 'btn-danger' }}">
+                                    {{ $task->status == 0 ? 'Complete' : 'Incomplete' }}
+                                </button>
+                                
+                            </form>
+
+
+
 
                         </td>
                     </tr>
@@ -34,10 +60,8 @@
             </tbody>
         </table>
     </div>
-
 @endsection
 
 @push('scripts')
-    <script>
-    </script>
+    <script></script>
 @endpush

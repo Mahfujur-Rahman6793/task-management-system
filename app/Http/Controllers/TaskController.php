@@ -16,20 +16,40 @@ class TaskController extends Controller
         $tasks = Task::where('user_id', Auth::id())->get();
         return view('tasks.index', compact('tasks'));
     }
-    public function create(){
+    public function create()
+    {
         return view('tasks.create');
     }
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'due_date' => 'nullable|date',
         ]);
-
-        // Auth::user()->tasks()->create($request->all());
+        $task = new Task();
+        $task->user_id = Auth::id();
+        $task->title = $request->title;
+        $task->description = $request->description;
+        $task->due_date = $request->due_date;
+        $task->status = 0;
+        $task->save();
         return response()->json(['success' => 'Task created successfully.']);
+    }
+    public function taskManagement(Request $request)
+    {
+        // dd($request->all());
+        $task = Task::find($request->id);
+        // dd($task);
+        if ($task->status == 0) {
+
+            $task->status = 1;
+        } else {
+            $task->status = 0;
+        }
+        $task->save();
+        return redirect()->route('tasks.index')->with('success', 'Task status updated successfully.');
     }
 
     public function update(Request $request, Task $task)
@@ -67,5 +87,4 @@ class TaskController extends Controller
         $task->update(['status' => $task->status === 'pending' ? 'completed' : 'pending']);
         return response()->json(['success' => 'Task status updated.']);
     }
-
 }

@@ -22,6 +22,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/show-task', [TaskController::class, 'index'])->name('tasks.index');
     Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
     Route::post('/tasks/create', [TaskController::class, 'store']);
+    Route::post('/tasks/completed_or_not/{id}', [TaskController::class, 'taskManagement'])->name('task_manage');
     Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
