@@ -16,15 +16,19 @@ class TaskController extends Controller
         $tasks = Task::where('user_id', Auth::id())->get();
         return view('tasks.index', compact('tasks'));
     }
+    public function create(){
+        return view('tasks.create');
+    }
     public function store(Request $request)
     {
+        dd($request->all());
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'due_date' => 'nullable|date',
         ]);
 
-        Auth::user()->tasks()->create($request->all());
+        // Auth::user()->tasks()->create($request->all());
         return response()->json(['success' => 'Task created successfully.']);
     }
 
