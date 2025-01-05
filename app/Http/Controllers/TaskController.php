@@ -35,7 +35,6 @@ class TaskController extends Controller
         $task->due_date = $request->due_date;
         $task->status = 0;
         $task->save();
-        // return redirect()->route('tasks.index')->with('success', 'Task status updated successfully.');
         return response()->json(['success' => 'Task created successfully!']);
     }
     public function taskManagement(Request $request)
@@ -62,11 +61,6 @@ class TaskController extends Controller
 
     public function updatePost(Request $request, Task $task)
     {
-        // dd($request->all());
-        // if ($task->user_id !== Auth::id()) {
-        //     abort(403);
-        // }
-
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -79,9 +73,6 @@ class TaskController extends Controller
         $task->description = $request->input('description');
         $task->due_date = $request->input('due_date');
         $task->save();
-
-
-        // return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
         return response()->json(['success' => 'Task updated successfully.']);
     }
 
