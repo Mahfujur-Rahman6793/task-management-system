@@ -35,12 +35,12 @@ class TaskController extends Controller
         $task->due_date = $request->due_date;
         $task->status = 0;
         $task->save();
-        return response()->json(['success' => 'Task created successfully.']);
+        return redirect()->route('tasks.index')->with('success', 'Task status updated successfully.');
     }
     public function taskManagement(Request $request)
     {
         // dd($request->all());
-        $task = Task::find($request->id);
+        $task = Task::findOrFail($request->id);
         // dd($task);
         if ($task->status == 0) {
 
@@ -52,11 +52,19 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task status updated successfully.');
     }
 
-    public function update(Request $request, Task $task)
+    public function update($id)
     {
-        if ($task->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $task = Task::findOrFail($id);
+        return view('tasks.edit', compact('task'));
+    }
+
+
+    public function updatePost(Request $request, Task $task)
+    {
+        // dd($request->all());
+        // if ($task->user_id !== Auth::id()) {
+        //     abort(403);
+        // }
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -64,18 +72,27 @@ class TaskController extends Controller
             'due_date' => 'nullable|date',
         ]);
 
-        $task->update($request->all());
-        return response()->json(['success' => 'Task updated successfully.']);
+        // $task->update($request->all());
+        $task = Task::findOrFail($request->id);
+        $task->title = $request->input('title');
+        $task->description = $request->input('description');
+        $task->due_date = $request->input('due_date');
+        $task->save();
+
+
+        return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
     }
 
-    public function destroy(Task $task)
+    public function destroy($id)
     {
-        if ($task->user_id !== Auth::id()) {
-            abort(403);
-        }
+        // if ($task->user_id !== Auth::id()) {
+        //     abort(403);
+        // }
 
+        $task = Task::findOrFail($id);
         $task->delete();
-        return response()->json(['success' => 'Task deleted successfully.']);
+        // return response()->json(['success' => 'Task deleted successfully.']);
+        return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
     }
 
     public function toggleStatus(Task $task)
