@@ -95,13 +95,4 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
     }
 
-    public function toggleStatus(Task $task)
-    {
-        if ($task->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        $task->update(['status' => $task->status === 'pending' ? 'completed' : 'pending']);
-        return response()->json(['success' => 'Task status updated.']);
-    }
 }
