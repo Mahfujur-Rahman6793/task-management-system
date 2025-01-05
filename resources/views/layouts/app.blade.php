@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Task Management System') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -20,6 +20,19 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- jQuery inclusion -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <style>
+        .nav-link {
+            color: black !important;
+        }
+
+        .nav-link.active {
+            color: blue !important;
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased">
@@ -27,17 +40,17 @@
         <!-- Sidebar -->
         <nav class="bg-white border-end shadow-sm" style="width: 250px;">
             <div class="p-3">
-                <h4 class="mb-4">{{ config('app.name', 'Laravel') }}</h4>
+                <h4 class="mb-4" style="font-size: 1.1rem;color:rgb(120, 121, 122)">{{ config('app.name', 'Task Management System') }}</h4>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('dashboard') }}">Dashboard</a>
+                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('tasks.index') }}">Tasks</a>
+                        <a class="nav-link {{ request()->routeIs('tasks.index') ? 'active' : '' }}" href="{{ route('tasks.index') }}">Tasks</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('tasks.create') }}">Add Task</a>
+                        <a class="nav-link {{ request()->routeIs('tasks.create') ? 'active' : '' }}" href="{{ route('tasks.create') }}">Add Task</a>
                     </li>
                 </ul>
             </div>
@@ -60,9 +73,19 @@
             <main class="p-4">
                 @yield('content')
             </main>
+
             @yield('script')
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.nav-link').click(function() {
+                $('.nav-link').removeClass('active');
+                $(this).addClass('active');
+            });
+        });
+    </script>
 </body>
 
 </html>
