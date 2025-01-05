@@ -18,32 +18,51 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
 
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <!-- Add this in the head or before the closing </body> tag -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
-        @include('layouts.navigation')
+    <div class="min-h-screen bg-gray-100 d-flex">
+        <!-- Sidebar -->
+        <nav class="bg-white border-end shadow-sm" style="width: 250px;">
+            <div class="p-3">
+                <h4 class="mb-4">{{ config('app.name', 'Laravel') }}</h4>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ route('dashboard') }}">Dashboard</a>
+                    </li>
 
-        <!-- Page Heading -->
-        @isset($header)
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endisset
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('tasks.index') }}">Tasks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('tasks.create') }}">Add Task</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-        <!-- Page Content -->
-        <main>
-            @yield('content')
-        </main>
+        <!-- Main Content -->
+        <div class="flex-grow-1">
+            @include('layouts.navigation')
+
+            <!-- Page Heading -->
+            @isset($header)
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endisset
+
+            <!-- Page Content -->
+            <main class="p-4">
+                @yield('content')
+            </main>
+            @yield('script')
+        </div>
     </div>
-    @yield('script')
 </body>
 
 </html>
