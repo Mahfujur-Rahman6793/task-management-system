@@ -9,7 +9,7 @@
                         <h4 class="mb-0">Create a New Task</h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('tasks.create') }}" method="post">
+                        <form id="task-form">
                             @csrf
                             <div class="mb-3 col-md-9 mx-auto">
                                 <label for="title" class="form-label">Task Title</label>
@@ -25,7 +25,7 @@
                                 <input type="date" name="due_date" id="due_date" class="form-control">
                             </div>
                             <div class="d-flex justify-content-end col-md-9 mx-auto">
-                                <button type="submit" class="btn btn-success btn-lg">Save Task</button>
+                                <button type="submit" class="btn btn-success btn-lg" id="save-button">Save Task</button>
                             </div>
                         </form>
                     </div>
@@ -33,4 +33,39 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#task-form').on('submit', function(event) {
+                event.preventDefault();
+                $('#save-button').prop('disabled', true);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('tasks.create') }}",
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('#save-button').prop('disabled', false);
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.success,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = "{{ route('tasks.index') }}";
+                        });
+                    },
+                    error: function(xhr) {
+                        $('#save-button').prop('disabled', false);
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

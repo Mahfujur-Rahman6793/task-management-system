@@ -35,7 +35,8 @@ class TaskController extends Controller
         $task->due_date = $request->due_date;
         $task->status = 0;
         $task->save();
-        return redirect()->route('tasks.index')->with('success', 'Task status updated successfully.');
+        // return redirect()->route('tasks.index')->with('success', 'Task status updated successfully.');
+        return response()->json(['success' => 'Task created successfully!']);
     }
     public function taskManagement(Request $request)
     {
@@ -80,19 +81,15 @@ class TaskController extends Controller
         $task->save();
 
 
-        return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
+        // return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
+        return response()->json(['success' => 'Task updated successfully.']);
     }
 
     public function destroy($id)
     {
-        // if ($task->user_id !== Auth::id()) {
-        //     abort(403);
-        // }
-
         $task = Task::findOrFail($id);
         $task->delete();
-        // return response()->json(['success' => 'Task deleted successfully.']);
+
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
     }
-
 }
