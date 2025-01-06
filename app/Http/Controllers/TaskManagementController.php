@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateValidationRequest;
 use App\Http\Requests\validationRequest;
-use App\Models\TaskManagement;
+use App\Models\Task;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -24,7 +24,7 @@ class TaskManagementController extends ApiController implements HasMiddleware
      */
     public function index()
     {
-        $task = TaskManagement::get();
+        $task = Task::get();
         if (!$task) {
             return $this->errorResponse("Task not Fond");
         }
@@ -39,7 +39,7 @@ class TaskManagementController extends ApiController implements HasMiddleware
     {
 
         // $task = TaskManagement::create($request->validated());
-        $task = $request->user()->taskapi()->create($request->validated());
+        $task = $request->user()->tasks()->create($request->validated());
 
         // dd($task);
 
@@ -52,7 +52,7 @@ class TaskManagementController extends ApiController implements HasMiddleware
      */
     public function show($id)
     {
-        $task = TaskManagement::find($id);
+        $task = Task::find($id);
         if (!$task) {
             return $this->errorResponse("Task not Fond");
         }
@@ -63,8 +63,9 @@ class TaskManagementController extends ApiController implements HasMiddleware
      * Update the specified resource in storage.
      */
 
-    public function update(UpdateValidationRequest $request, TaskManagement $task)
+    public function update(UpdateValidationRequest $request, $id)
     {
+        $task = Task::find($id);
         $task->update($request->validated());
         if (!$task) {
             return $this->errorResponse("Task not Fond");
@@ -76,7 +77,7 @@ class TaskManagementController extends ApiController implements HasMiddleware
      */
     public function destroy($id)
     {
-        $task = TaskManagement::find($id);
+        $task = Task::find($id);
         if (!$task) {
             return $this->errorResponse("Task not Fond");
         }

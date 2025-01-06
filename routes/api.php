@@ -15,7 +15,7 @@ Route::get('/get_task', [TaskManagementController::class, 'index']);
 Route::post('/post_task', [TaskManagementController::class, 'store']);
 // Route::middleware('auth:sanctum')->post('/post_task', [TaskManagementController::class, 'store']);
 Route::get('/single_task/{id}', [TaskManagementController::class, 'show']);
-Route::put('/update_task/{task}', [TaskManagementController::class, 'update']);
+Route::put('/update_task/{id}', [TaskManagementController::class, 'update']);
 Route::delete('/delete_task/{id}', [TaskManagementController::class, 'destroy']);
 
 
