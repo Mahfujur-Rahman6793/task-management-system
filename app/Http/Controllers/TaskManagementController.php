@@ -2,48 +2,86 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateValidationRequest;
+use App\Http\Requests\validationRequest;
 use App\Models\TaskManagement;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class TaskManagementController extends Controller
+class TaskManagementController extends ApiController implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'show']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $task = TaskManagement::get();
+        if (!$task) {
+            return $this->errorResponse("Task not Fond");
+        }
+        return $this->successResponse($task);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+
+    public function store(validationRequest $request)
     {
-        //
+
+        // $task = TaskManagement::create($request->validated());
+        $task = $request->user()->taskapi()->create($request->validated());
+
+        // dd($task);
+
+        return $this->successResponse($task, "Added new Task", 200);
     }
+
 
     /**
      * Display the specified resource.
      */
-    public function show(TaskManagement $taskManagement)
+    public function show($id)
     {
-        //
+        $task = TaskManagement::find($id);
+        if (!$task) {
+            return $this->errorResponse("Task not Fond");
+        }
+        return $this->successResponse($task);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, TaskManagement $taskManagement)
-    {
-        //
-    }
 
+    public function update(UpdateValidationRequest $request, TaskManagement $task)
+    {
+        $task->update($request->validated());
+        if (!$task) {
+            return $this->errorResponse("Task not Fond");
+        }
+        return $this->successResponse($task, "Updated Task Successfully", 200);
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TaskManagement $taskManagement)
+    public function destroy($id)
     {
-        //
+        $task = TaskManagement::find($id);
+        if (!$task) {
+            return $this->errorResponse("Task not Fond");
+        }
+        $task->delete();
+
+        return $this->successResponse(null, "Deleted Task Successfully", 200);
     }
 }
